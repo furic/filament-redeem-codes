@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 
 class RedeemCampaignForm
 {
@@ -83,9 +84,21 @@ class RedeemCampaignForm
                 ->required();
         }
 
+        if ($rewardType !== null && class_exists($rewardType) && is_subclass_of($rewardType, Model::class)) {
+            return Select::make('type')
+                ->options(fn () => $rewardType::query()
+                    ->orderBy('sort_order')
+                    ->orderBy('label')
+                    ->pluck('label', 'key')
+                    ->all())
+                ->searchable()
+                ->required()
+                ->helperText('Manage available types under "Reward Types".');
+        }
+
         return TextInput::make('type')
             ->required()
             ->maxLength(64)
-            ->helperText('Bind a backed enum to filament-redeem-codes.reward_type for a typed dropdown.');
+            ->helperText('Bind a backed enum or Eloquent model to filament-redeem-codes.reward_type for a typed dropdown.');
     }
 }

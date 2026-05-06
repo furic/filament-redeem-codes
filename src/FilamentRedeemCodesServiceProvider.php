@@ -22,6 +22,7 @@ class FilamentRedeemCodesServiceProvider extends PackageServiceProvider
                 'create_redeem_codes_table',
                 'create_redeem_code_rewards_table',
                 'create_redeem_code_histories_table',
+                'create_redeem_reward_types_table',
             ]);
     }
 

@@ -21,12 +21,13 @@ class RedeemCodeResource extends JsonResource
                 'name' => $this->campaign->name,
                 'description' => $this->campaign->description,
             ]),
-            'rewards' => $this->rewards->map(fn ($reward) => [
+            'rewards' => $this->rewards->map(fn ($reward) => array_filter([
                 'type' => $reward->type instanceof \BackedEnum ? $reward->type->value : $reward->type,
+                'label' => $reward->type_label,
                 'amount' => $reward->amount,
                 'item_id' => $reward->item_id,
                 'payload' => $reward->payload,
-            ])->values(),
+            ], fn ($value) => $value !== null))->values(),
         ];
     }
 }

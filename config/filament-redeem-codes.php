@@ -21,11 +21,21 @@ return [
     | Reward type binding
     |--------------------------------------------------------------------------
     |
-    | Bind your host app's reward enum here. Must implement
-    | Furic\FilamentRedeemCodes\Contracts\RewardType (a marker interface)
-    | and be a backed enum. When null, types are stored/returned as raw strings.
+    | Bind your host app's reward type definition here. Two flavours work:
     |
-    | Example: 'reward_type' => App\Enums\RewardType::class,
+    |  1. A backed enum implementing
+    |     Furic\FilamentRedeemCodes\Contracts\RewardType — compile-time safe,
+    |     code-version-controlled.  Example:
+    |       'reward_type' => App\Enums\RewardType::class
+    |
+    |  2. An Eloquent model implementing the same contract — admins manage
+    |     the list at runtime via a Filament Resource. Bind the bundled
+    |     Furic\FilamentRedeemCodes\Models\RedeemRewardType, or your own
+    |     model that implements RewardType + has `key` and `label` columns.
+    |     Example:
+    |       'reward_type' => Furic\FilamentRedeemCodes\Models\RedeemRewardType::class
+    |
+    | When null, types are stored/returned as raw strings (free-text).
     |
     */
     'reward_type' => null,
@@ -64,5 +74,6 @@ return [
         'codes' => 'redeem_codes',
         'rewards' => 'redeem_code_rewards',
         'histories' => 'redeem_code_histories',
+        'reward_types' => 'redeem_reward_types',
     ],
 ];

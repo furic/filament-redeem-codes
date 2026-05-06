@@ -8,7 +8,11 @@ This is a ground-up rewrite of [`furic/redeem-codes`](https://github.com/furic/l
 
 | Campaign list | Edit campaign + rewards | Generate codes |
 |---|---|---|
-| ![Campaign list](docs/images/campaign-list.png) | ![Edit campaign](docs/images/edit-form.png) | ![Generate codes modal](docs/images/generate-codes-modal.png) |
+| ![Campaign list](docs/images/campaign-list.png) | ![Edit campaign](docs/images/edit-form-typed.png) | ![Generate codes modal](docs/images/generate-codes-modal.png) |
+
+| Reward types (admin-managed) | Add a new reward type |
+|---|---|
+| ![Reward types list](docs/images/reward-types-list.png) | ![Create reward type](docs/images/reward-type-create.png) |
 
 ## Why this plugin
 
@@ -19,7 +23,7 @@ Existing Filament coupon/voucher plugins target e-commerce: one code, one discou
 | Generate N codes at once | ❌ | ✅ |
 | Multi-reward per code | ❌ (1 discount only) | ✅ (any number of typed rewards) |
 | Campaign / batch grouping | ❌ | ✅ |
-| Game-style rewards (items, currency) | ❌ (monetary only) | ✅ (host binds own enum) |
+| Game-style rewards (items, currency) | ❌ (monetary only) | ✅ (enum or admin-managed) |
 | Print/OCR-friendly code alphabet | — | ✅ (no `0/1/O/I` ambiguity) |
 | Public redemption API + rate limit | — | ✅ |
 
@@ -53,9 +57,13 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-## Bind your reward enum
+## Reward types — pick a binding strategy
 
-Reward types are stored as strings by default. For type safety, define a backed enum implementing the marker interface and bind it in config:
+Reward types are stored as strings on each reward row. The `filament-redeem-codes.reward_type` config decides how those strings are constrained and presented in the panel. Two flavours are supported:
+
+### Option A: Backed enum (recommended for single-game, code-controlled types)
+
+Define a backed enum implementing the marker interface and bind it:
 
 ```php
 // app/Enums/RewardType.php
@@ -78,7 +86,30 @@ enum RewardType: string implements RewardTypeContract
 'reward_type' => App\Enums\RewardType::class,
 ```
 
-The Filament form will switch from a free-text input to a typed `Select`, and `RedeemCodeReward::$type` will hydrate as your enum.
+The campaign form switches from a free-text input to a typed `Select`, and `RedeemCodeReward::$type` hydrates as your enum so you get exhaustive `match` checks in host code.
+
+**Use when:** the reward set is closed and tied to compiled client logic. Adding a new type requires deploying client code anyway, so source-controlling the list makes sense.
+
+### Option B: Eloquent model (admin-managed, runtime-editable)
+
+Bind the bundled model — a `Reward Types` page appears in the panel where ops/marketing can add, rename, and reorder types without a deploy:
+
+```php
+// config/filament-redeem-codes.php
+'reward_type' => Furic\FilamentRedeemCodes\Models\RedeemRewardType::class,
+```
+
+Each row carries `key` (machine identifier sent to clients), `label` (human name), `icon`, `description`, and `sort_order`. The campaign form populates the Type dropdown from these rows. The redemption API includes the resolved label alongside the raw type string:
+
+```json
+{"type": "coins", "label": "Coins", "amount": 500}
+```
+
+**Use when:** multi-game/white-label panels, marketing-driven cosmetic rewards (avatar frames, sticker packs), or i18n labels — anywhere the *type list itself* benefits from non-developer curation. **Tradeoff:** you lose compile-time safety in host code.
+
+### Option C: Free-text (default, no binding)
+
+Leave `reward_type` as `null`. Campaign form uses a plain text input, types are stored verbatim. Fine for prototypes and low-stakes uses.
 
 ## Generating codes
 
@@ -118,12 +149,14 @@ GET /api/redeem/{code}
     "reusable": false,
     "redeemed_at": "2026-05-06T12:34:56+00:00",
     "rewards": [
-      {"type": "coins", "amount": 500, "item_id": null, "payload": null},
-      {"type": "energy", "amount": 5, "item_id": null, "payload": null}
+      {"type": "coins", "label": "Coins", "amount": 500},
+      {"type": "energy", "label": "Energy", "amount": 5}
     ]
   }
 }
 ```
+
+The `label` field is included only when a reward type binding is configured (enum case name, or model `label` column). With no binding, only `type` is returned.
 
 **Failure responses:**
 
