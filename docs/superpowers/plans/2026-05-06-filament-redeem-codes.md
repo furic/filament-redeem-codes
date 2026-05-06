@@ -6,7 +6,7 @@
 
 **Architecture:** Plugin registers a `RedeemCampaignResource` into the host app's Filament panel. Each campaign batches N codes that share M rewards (the unique data shape inherited from the v1 design). A separate Laravel service provider also exposes a rate-limited `/api/redeem/{code}` endpoint for client apps (Unity, mobile, etc.). Reward types are an interface — host apps bind their own enum.
 
-**Tech Stack:** PHP 8.2+, Laravel 11/12, Filament v5, Pest 3, Spatie LaravelPackageTools (skeleton), Orchestra Testbench (host app for tests).
+**Tech Stack:** PHP 8.2+, Laravel 11/12/13, Filament v5, Pest 3, Spatie LaravelPackageTools (skeleton), Orchestra Testbench (host app for tests).
 
 ---
 

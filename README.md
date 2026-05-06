@@ -4,6 +4,12 @@ A Filament v5 plugin for **batch-issued, multi-reward redeem codes** — built f
 
 This is a ground-up rewrite of [`furic/redeem-codes`](https://github.com/furic/laravel-redeem-codes), a 2018 package retired in favour of a Filament-native approach.
 
+## Screenshots
+
+| Campaign list | Edit campaign + rewards | Generate codes |
+|---|---|---|
+| ![Campaign list](docs/images/campaign-list.png) | ![Edit campaign](docs/images/edit-form.png) | ![Generate codes modal](docs/images/generate-codes-modal.png) |
+
 ## Why this plugin
 
 Existing Filament coupon/voucher plugins target e-commerce: one code, one discount value. None of them model the "campaign → N codes → M shared rewards" topology that games need (e.g. an Easter event hands out 5,000 codes that all grant 500 coins + 1 character + 5 energy).
@@ -20,7 +26,7 @@ Existing Filament coupon/voucher plugins target e-commerce: one code, one discou
 ## Requirements
 
 - PHP `^8.2`
-- Laravel `^11.0 || ^12.0`
+- Laravel `^11.0 || ^12.0 || ^13.0`
 - Filament `^5.0`
 
 ## Install
