@@ -1,6 +1,14 @@
 # Filament Redeem Codes
 
+[![Filament Plugin](https://img.shields.io/badge/Filament-Plugin-FDAE4B?style=flat&logo=laravel&logoColor=white)](https://filamentphp.com/plugins/richard-fu-redeem-codes)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/furic/filament-redeem-codes.svg?style=flat)](https://packagist.org/packages/furic/filament-redeem-codes)
+[![Total Downloads](https://img.shields.io/packagist/dt/furic/filament-redeem-codes.svg?style=flat)](https://packagist.org/packages/furic/filament-redeem-codes)
+[![PHP Version](https://img.shields.io/packagist/php-v/furic/filament-redeem-codes.svg?style=flat)](https://packagist.org/packages/furic/filament-redeem-codes)
+[![License](https://img.shields.io/packagist/l/furic/filament-redeem-codes.svg?style=flat)](LICENSE)
+
 A Filament v5 plugin for **batch-issued, multi-reward redeem codes** — built for game player compensation, event rewards, and marketing campaigns where one batch needs to issue many codes that all share the same reward set.
+
+📦 Available on the [Filament plugin directory](https://filamentphp.com/plugins/richard-fu-redeem-codes).
 
 This is a ground-up rewrite of [`furic/redeem-codes`](https://github.com/furic/laravel-redeem-codes), a 2018 package retired in favour of a Filament-native approach.
 
